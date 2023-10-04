@@ -1,0 +1,10 @@
+spring:
+  profiles:
+    active: local
+  jpa:
+    show-sql: true
+    generate-ddl: true
+    database: mysql
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
