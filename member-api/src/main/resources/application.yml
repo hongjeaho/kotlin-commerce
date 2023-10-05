@@ -1,6 +1,8 @@
 spring:
   profiles:
     active: local
+    group:
+      local: common-core
   jpa:
     show-sql: true
     generate-ddl: true
