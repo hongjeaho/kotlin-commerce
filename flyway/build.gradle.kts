@@ -15,7 +15,7 @@ flyway {
     url = "jdbc:mysql://localhost:3306/store"
     user = "root"
     password = "root"
-    locations = arrayOf("filesystem:${file("migration").absolutePath}")
+    locations = arrayOf("filesystem:${file("src/main/resources/migration").absolutePath}")
     encoding = "UTF-8"
     cleanDisabled = false
     validateOnMigrate = true
