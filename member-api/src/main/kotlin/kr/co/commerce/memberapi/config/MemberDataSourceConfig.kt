@@ -1,12 +1,15 @@
 package kr.co.commerce.memberapi.config
 
 import com.zaxxer.hikari.HikariDataSource
+import kr.co.commerce.memberapi.config.MemberDataSourceConfig.Companion.DOMAIN_NAMED_PARAMETER_JDBC_OPERATIONS
+import kr.co.commerce.memberapi.config.MemberDataSourceConfig.Companion.TRANSACTION_MANAGER
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.boot.jdbc.DataSourceBuilder
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.annotation.AliasFor
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
@@ -21,6 +24,10 @@ import kotlin.reflect.KClass
 
 @EnableTransactionManagement
 @Configuration
+@EnableJpaRepositories(
+  basePackages = ["kr.co.commerce.memberapi.dao"],
+  transactionManagerRef = TRANSACTION_MANAGER,
+)
 class MemberDataSourceConfig {
   companion object {
     const val DOMAIN_DATA_SOURCE = "memberDomainDataSource"
