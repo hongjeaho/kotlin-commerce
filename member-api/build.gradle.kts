@@ -6,4 +6,5 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 
     testImplementation(project(":flyway"))
+    testImplementation(project(":common-test"))
 }
