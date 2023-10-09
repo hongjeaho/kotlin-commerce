@@ -1,87 +1,88 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("org.springframework.boot") version "3.1.4" apply false
-    id("io.spring.dependency-management") version "1.1.3"
+  id("org.springframework.boot") version "3.1.4" apply false
+  id("io.spring.dependency-management") version "1.1.3"
+  id("org.jlleitschuh.gradle.ktlint") version "11.6.0"
 
-    kotlin("jvm") version "1.8.22"
-    kotlin("plugin.spring") version "1.8.22"
-    kotlin("plugin.jpa") version "1.8.22"
+  kotlin("jvm") version "1.8.22"
+  kotlin("plugin.spring") version "1.8.22"
+  kotlin("plugin.jpa") version "1.8.22"
 }
 
 allprojects {
-    group = "kr.co.commerce"
-    version = "0.0.1-SNAPSHOT"
+  group = "kr.co.commerce"
+  version = "0.0.1-SNAPSHOT"
 
-    repositories {
-        mavenCentral()
-    }
+  repositories {
+    mavenCentral()
+  }
 }
 
 subprojects {
-    apply(plugin = "kotlin")
-    apply(plugin = "kotlin-spring")
-    apply(plugin = "io.spring.dependency-management")
+  apply(plugin = "kotlin")
+  apply(plugin = "kotlin-spring")
+  apply(plugin = "io.spring.dependency-management")
 
-    java {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+  java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+  }
+
+  val testIntegration: SourceSet by sourceSets.creating {
+    compileClasspath += sourceSets.main.get().output
+    runtimeClasspath += sourceSets.main.get().output
+  }
+
+  configurations {
+    testIntegration.implementationConfigurationName {
+      extendsFrom(configurations.testImplementation.get())
     }
 
-    val testIntegration: SourceSet by sourceSets.creating {
-        compileClasspath += sourceSets.main.get().output
-        runtimeClasspath += sourceSets.main.get().output
+    testIntegration.runtimeOnlyConfigurationName {
+      extendsFrom(configurations.testRuntimeOnly.get())
     }
+  }
 
-    configurations {
-        testIntegration.implementationConfigurationName {
-            extendsFrom(configurations.testImplementation.get())
-        }
+  dependencies {
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
+    implementation("org.jetbrains.kotlin:kotlin-reflect")
+    runtimeOnly("com.mysql:mysql-connector-j")
 
-        testIntegration.runtimeOnlyConfigurationName {
-            extendsFrom(configurations.testRuntimeOnly.get())
-        }
+    annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
+
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+  }
+
+  dependencyManagement {
+    imports {
+      mavenBom(org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES)
     }
+  }
 
-    dependencies {
-        implementation("org.springframework.boot:spring-boot-starter-actuator")
-        implementation("org.jetbrains.kotlin:kotlin-reflect")
-        runtimeOnly("com.mysql:mysql-connector-j")
-
-        annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
-
-        testImplementation("org.springframework.boot:spring-boot-starter-test")
+  tasks.withType<KotlinCompile> {
+    kotlinOptions {
+      freeCompilerArgs = listOf("-Xjsr305=strict")
+      jvmTarget = "17"
     }
+  }
 
-    dependencyManagement {
-        imports{
-            mavenBom(org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES)
-        }
-    }
+  tasks.withType<Test> {
+    useJUnitPlatform()
+  }
 
-    tasks.withType<KotlinCompile> {
-        kotlinOptions {
-            freeCompilerArgs = listOf("-Xjsr305=strict")
-            jvmTarget = "17"
-        }
-    }
+  val testIntegrationTask = tasks.register<Test>("testIntegration") {
+    description = "Runs integration tests."
+    group = "verification"
+    useJUnitPlatform()
 
-    tasks.withType<Test> {
-        useJUnitPlatform()
-    }
+    testClassesDirs = testIntegration.output.classesDirs
+    classpath = testIntegration.runtimeClasspath
 
-    val testIntegrationTask = tasks.register<Test>("testIntegration") {
-        description = "Runs integration tests."
-        group = "verification"
-        useJUnitPlatform()
+    shouldRunAfter(tasks.test)
+  }
 
-        testClassesDirs = testIntegration.output.classesDirs
-        classpath = testIntegration.runtimeClasspath
-
-        shouldRunAfter(tasks.test)
-    }
-
-    tasks.check {
-        dependsOn(testIntegrationTask)
-    }
+  tasks.check {
+    dependsOn(testIntegrationTask)
+  }
 }
