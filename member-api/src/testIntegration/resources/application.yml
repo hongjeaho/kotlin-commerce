@@ -3,6 +3,15 @@ spring:
     active: test
     group:
       test: common-core, flyway
+  jpa:
+    show-sql: true
+    database: mysql
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
 
 member:
   domain:
