@@ -1,8 +1,6 @@
 package kr.co.commerce.memberapi.application
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
-import kr.co.commerce.memberapi.config.MemberTransactional
-import kr.co.commerce.memberapi.dao.MemberRepository
 import org.springframework.boot.test.context.SpringBootTest
 
 @SpringBootTest
