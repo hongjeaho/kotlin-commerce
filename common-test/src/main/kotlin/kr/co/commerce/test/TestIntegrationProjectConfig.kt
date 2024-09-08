@@ -19,7 +19,7 @@ abstract class TestIntegrationProjectConfig : AbstractProjectConfig() {
   override val failOnIgnoredTests = false
   override val isolationMode = IsolationMode.SingleInstance
 
-  private val mysqlContainer = MySQLContainer<Nothing>("mysql:8.0.28")
+  private val mysqlContainer = MySQLContainer<Nothing>("mysql:8.0.31")
       .apply {
         withDatabaseName("store")
         withUsername("root")

@@ -2,8 +2,8 @@ version: '3'
 
 services:
   mysql:
-    image: mysql:8.0.28
-    container_name: mysql8.0.28
+    image: mysql:8.0.31
+    container_name: mysql8.0.31
     platform: linux/amd64
     environment:
       - MYSQL_ROOT_PASSWORD=root
