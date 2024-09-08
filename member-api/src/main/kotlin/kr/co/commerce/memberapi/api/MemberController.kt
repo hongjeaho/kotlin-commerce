@@ -1,7 +1,7 @@
 package kr.co.commerce.memberapi.api
 
+import kr.co.commerce.common.jooq.generated.tables.pojos.Member
 import kr.co.commerce.memberapi.application.MemberSearchService
-import kr.co.commerce.memberapi.domain.Member
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
@@ -13,5 +13,5 @@ class MemberController(
 ) {
 
   @GetMapping
-  fun findAll() : List<Member> = memberSearchService.findAll()
+  fun findLimit(page: Long, pageSize: Long) : List<Member> = memberSearchService.findLimit(page, pageSize)
 }
